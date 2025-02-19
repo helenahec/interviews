@@ -9,38 +9,39 @@ use Carbon\Carbon;
 class JobApplicationController extends Controller
 {
     public function index(Request $request)
-    {
-        $sortColumn = $request->query('sort', 'created_at'); // Default sorting column
-        $sortDirection = $request->query('direction', 'desc'); // Default sorting direction
+{
+    $sortColumn = $request->query('sort', 'created_at');
+    $sortDirection = $request->query('direction', 'desc');
 
-        // Allowed columns to prevent SQL injection
-        $allowedColumns = ['company', 'status', 'interview_date', 'next_date', 'created_at'];
-        if (!in_array($sortColumn, $allowedColumns)) {
-            $sortColumn = 'created_at';
-        }
-
-        // Query with search & date filtering
-        $query = JobApplication::query();
-
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where('company', 'like', "%$search%")
-                ->orWhere('status', 'like', "%$search%")
-                ->orWhere('position', 'like', "%$search%");
-        }
-
-        // Apply date filter correctly
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::parse($request->start_date)->startOfDay();
-            $endDate = Carbon::parse($request->end_date)->endOfDay();
-            $query->whereBetween('created_at', [$startDate, $endDate]);
-        }
-
-        // Fetch paginated results with sorting
-        $jobApplications = $query->orderBy($sortColumn, $sortDirection)->paginate(10);
-
-        return view('job_applications.index', compact('jobApplications', 'sortColumn', 'sortDirection'));
+    $allowedColumns = ['company', 'status', 'interview_date', 'next_date', 'created_at'];
+    if (!in_array($sortColumn, $allowedColumns)) {
+        $sortColumn = 'created_at';
     }
+
+    $query = JobApplication::query();
+
+    // Search functionality with query grouping
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('company', 'like', "%$search%")
+              ->orWhere('status', 'like', "%$search%")
+              ->orWhere('position', 'like', "%$search%");
+        });
+    }
+
+    // Apply date filter correctly
+    if ($request->has('start_date') && $request->has('end_date')) {
+        $startDate = Carbon::parse($request->start_date)->startOfDay();
+        $endDate = Carbon::parse($request->end_date)->endOfDay();
+        $query->whereBetween('created_at', [$startDate, $endDate]);
+    }
+
+    // Fetch paginated results with sorting
+    $jobApplications = $query->orderBy($sortColumn, $sortDirection)->paginate(10);
+
+    return view('job_applications.index', compact('jobApplications', 'sortColumn', 'sortDirection'));
+}
 
     public function create()
     {

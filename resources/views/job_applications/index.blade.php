@@ -11,12 +11,13 @@
     <div class="row g-2 mb-3">
     <!-- Search Bar -->
     <div class="col-md-6">
-        <div class="input-group">
-            <span class="input-group-text">🔍</span>
-            <input type="text" name="search" class="form-control" placeholder="Search by company, status, or position"
-                value="{{ request('search') }}">
-            <button type="submit" class="btn btn-primary">Search</button>
-        </div>
+        <form method="GET" action="{{ route('job-applications.index') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by company, status, or position"
+                    value="{{ request('search') }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
     </div>
 
     <!-- Date Filters -->
