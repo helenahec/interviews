@@ -5,37 +5,35 @@
 <div class="container p-4 shadow-lg bg-white rounded" style="max-width: 1000px;">
 
         {{-- Title with proper spacing --}}
-        <h2 class="text-center my-4">
-            📋 <strong>Job Applications</strong>
-        </h2>
-    <div class="row g-2 mb-3">
-    <!-- Search Bar -->
-    <div class="col-md-6">
-        <form method="GET" action="{{ route('job-applications.index') }}" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search by company, status, or position"
-                    value="{{ request('search') }}">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Date Filters -->
-    <div class="col-md-6 d-flex gap-2">
-        <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-        <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ route('job-applications.index') }}" class="btn btn-secondary">Clear</a>
-    </div>
-</div>
-
-
-        {{-- Export Button with center alignment --}}
-        <div class="d-flex justify-content-end mb-3">
+        <div class="mb-4">
+    <h2 class="text-center mb-4">
+        <i class="bi bi-journal-text"></i> Job Applications
+    </h2>
+    
+    <form method="GET" action="{{ route('job-applications.index') }}" class="row g-2 justify-content-center align-items-center">
+        <div class="col-md-4">
+            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search by company or position">
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="start_date" value="{{ request('start_date') }}" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control">
+        </div>
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </div>
+        <div class="col-md-auto">
+            <a href="{{ route('job-applications.index') }}" class="btn btn-outline-secondary">Clear</a>
+        </div>
+        <div class="col-md-auto">
             <a href="{{ route('job-applications.export') }}" class="btn btn-success">
-                📤 Export to CSV
+                📥 Export to CSV
             </a>
         </div>
+    </form>
+</div>
+
 
         {{-- Job Applications Table --}}
         <table class="table table-striped table-hover shadow-sm">
@@ -46,7 +44,7 @@
                     <th>Step</th>
                     <th>Interview Date</th>
                     <th>Next Date</th>
-                    <th>Status</th>
+                    <th>Date Applied</th>
                     <th>Position</th>
                     <th>Actions</th>
                 </tr>
@@ -63,15 +61,11 @@
                     <td>{{ $job->position }}</td>
                     <td>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('job-applications.edit', $job->id) }}" class="btn btn-warning btn-sm">
-                                ✏️ Edit
-                            </a>
-                            <form action="{{ route('job-applications.destroy', $job->id) }}" method="POST">
+                        <a href="{{ route('job-applications.edit', $job->id) }}" class="btn btn-sm btn-edit">Edit</a>
+                            <form action="{{ route('job-applications.destroy', $job->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">
-                                    🗑 Delete
-                                </button>
+                                <button type="submit" class="btn btn-sm btn-delete">Delete</button>
                             </form>
                         </div>
                     </td>
