@@ -23,12 +23,13 @@ class JobApplicationController extends Controller
     // Search functionality with query grouping
     if ($request->has('search') && $request->search != '') {
         $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('company', 'like', "%$search%")
-              ->orWhere('status', 'like', "%$search%")
-              ->orWhere('position', 'like', "%$search%");
-        });
+        $query->where('company', 'like', "%$search%")
+            ->orWhere('status', 'like', "%$search%")
+            ->orWhere('position', 'like', "%$search%");
     }
+
+
+    
 
     // Apply date filter correctly
     if ($request->has('start_date') && $request->has('end_date')) {
